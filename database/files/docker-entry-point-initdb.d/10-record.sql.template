@@ -1,0 +1,5 @@
+CREATE DATABASE record;
+
+CREATE USER record WITH PASSWORD '${record_password}';
+
+GRANT ALL PRIVILEGES ON DATABASE record TO record;
