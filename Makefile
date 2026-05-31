@@ -26,6 +26,10 @@ database-run:
 database-clean:
 	make -C database clean
 
+.PHONY: database-volume-clean
+database-volume-clean:
+	docker volume rm pg-data
+
 .PHONY: backend-build
 backend-build:
 	make -C backend

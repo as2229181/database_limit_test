@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("config: %v", err)
+	}
 
 	if err := db.Migrate(cfg.DatabaseURL); err != nil {
 		log.Fatalf("migrate: %v", err)

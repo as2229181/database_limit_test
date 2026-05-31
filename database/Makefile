@@ -12,8 +12,7 @@ CONTAINER_NAME=$(CONATINER_PREFIX)-$(PROJECT_NAME)
 BUILD_DIR=_build
 BUILD_FILES= \
 	${BUILD_DIR}/Dockerfile \
-	${BUILD_DIR}/files/docker-entry-point-initdb.d/10-record.sh \
-	${BUILD_DIR}/files/docker-entry-point-initdb.d/10-record.sql.template \
+	${BUILD_DIR}/files/docker-entry-point-initdb.d/10-record.sql \
 
 .PHONY: all
 all: build
@@ -37,7 +36,6 @@ run: build
 		-v pg-data:/var/lib/postgresql/data \
 		-e POSTGRES_USER=$(POSTGRES_USER) \
 		-e POSTGRES_PASSWORD=$(POSTGRES_PASSWORD) \
-		-e RECORD_PASSWORD=$(RECORD_PASSWORD) \
 		-p 5432:5432 \
 		$(IMAGE_NAME)
 

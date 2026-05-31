@@ -10,28 +10,51 @@ type Config struct {
 	DatabaseURL string
 }
 
-func Load() Config {
+func Load() (Config, error) {
+	databaseURL, err := databaseURL()
+	if err != nil {
+		return Config{}, err
+	}
+
 	return Config{
 		HTTPAddr:    envOr("HTTP_ADDR", ":8080"),
-		DatabaseURL: databaseURL(),
-	}
+		DatabaseURL: databaseURL,
+	}, nil
 }
 
-func databaseURL() string {
+func databaseURL() (string, error) {
 	if url := os.Getenv("DATABASE_URL"); url != "" {
-		return url
+		return url, nil
 	}
 
-	user := envOr("POSTGRES_USER", "record")
-	password := envOr("POSTGRES_PASSWORD", "pass")
+	user, err := envRequired("POSTGRES_USER")
+	if err != nil {
+		return "", err
+	}
+	password, err := envRequired("POSTGRES_PASSWORD")
+	if err != nil {
+		return "", err
+	}
+	dbName, err := envRequired("POSTGRES_DB")
+	if err != nil {
+		return "", err
+	}
+
 	host := envOr("POSTGRES_HOST", "localhost")
 	port := envOr("POSTGRES_PORT", "5432")
-	dbName := envOr("POSTGRES_DB", "record")
 
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s?sslmode=disable",
 		user, password, host, port, dbName,
-	)
+	), nil
+}
+
+func envRequired(key string) (string, error) {
+	value := os.Getenv(key)
+	if value == "" {
+		return "", fmt.Errorf("required environment variable %s is not set", key)
+	}
+	return value, nil
 }
 
 func envOr(key, fallback string) string {

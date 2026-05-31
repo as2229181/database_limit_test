@@ -1,3 +1,0 @@
-CREATE USER record WITH PASSWORD '${record_password}';
-
-CREATE DATABASE record OWNER record;

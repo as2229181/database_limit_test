@@ -15,7 +15,10 @@ import (
 )
 
 func main() {
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("config: %v", err)
+	}
 	ctx := context.Background()
 
 	if err := db.Migrate(cfg.DatabaseURL); err != nil {
