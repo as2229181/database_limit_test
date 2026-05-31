@@ -1,3 +1,19 @@
+.PHONY: up down logs ps clean
+up:
+	docker compose up -d --build
+
+down:
+	docker compose down
+
+logs:
+	docker compose logs -f
+
+ps:
+	docker compose ps
+
+clean:
+	docker compose down -v
+
 .PHONY: database-build
 database-build:
 	make -C database
@@ -12,7 +28,7 @@ database-clean:
 
 .PHONY: backend-build
 backend-build:
-	make -C database
+	make -C backend
 
 .PHONY: backend-run
 backend-run:
