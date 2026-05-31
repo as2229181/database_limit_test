@@ -1,0 +1,35 @@
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  postgres:
+    build: ./database
+    image: ${POSTGRES_IMAGE}
+    container_name: ${CONATINER_PREFIX}-postgres
+    env_file:
+      - database/.env
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    ports:
+      - "${POSTGRES_PUBLISH_PORT}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_SUPER_USER} -d postgres"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    image: ${BACKEND_IMAGE}
+    container_name: ${CONATINER_PREFIX}-backend
+    env_file:
+      - backend/.env
+    environment:
+      POSTGRES_HOST: ${POSTGRES_HOST}
+    ports:
+      - "${BACKEND_PUBLISH_PORT}:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  pg-data:
