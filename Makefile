@@ -14,6 +14,9 @@ ps:
 clean:
 	docker compose down -v
 
+migrate:
+	docker compose --profile migrate run --rm migrate
+
 .PHONY: database-build
 database-build:
 	make -C database
